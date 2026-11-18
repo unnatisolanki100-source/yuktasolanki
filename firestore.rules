@@ -1,0 +1,309 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Global Default-Deny Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // 2. Hardened Global Helpers
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() &&
+        request.auth.token.email_verified == true && (
+          request.auth.token.email == 'unnatisolanki100@gmail.com' ||
+          exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+        );
+    }
+
+    // 3. Entity Validation Blueprints
+    function isValidBooking(data) {
+      return data.keys().hasAll([
+          'bookingCode',
+          'customerName',
+          'phone',
+          'serviceId',
+          'serviceTitle',
+          'eventDate',
+          'eventLocation',
+          'preferredTime',
+          'requirements',
+          'status',
+          'adminNotes',
+          'createdAt',
+          'updatedAt'
+        ]) &&
+        data.keys().hasOnly([
+          'bookingCode',
+          'customerName',
+          'phone',
+          'serviceId',
+          'serviceTitle',
+          'eventDate',
+          'eventLocation',
+          'preferredTime',
+          'requirements',
+          'status',
+          'adminNotes',
+          'createdAt',
+          'updatedAt'
+        ]) &&
+        data.bookingCode is string && data.bookingCode.size() >= 6 && data.bookingCode.size() <= 32 && data.bookingCode.matches('^[A-Z0-9\\-]+$') &&
+        data.customerName is string && data.customerName.size() >= 2 && data.customerName.size() <= 80 &&
+        data.phone is string && data.phone.size() >= 8 && data.phone.size() <= 20 && data.phone.matches('^[0-9+\\-\\s()]{8,20}$') &&
+        data.serviceId is string && data.serviceId.size() >= 1 && data.serviceId.size() <= 80 && data.serviceId.matches('^[a-zA-Z0-9_\\-]+$') &&
+        data.serviceTitle is string && data.serviceTitle.size() >= 2 && data.serviceTitle.size() <= 100 &&
+        data.eventDate is string && data.eventDate.size() == 10 && data.eventDate.matches('^\\d{4}-\\d{2}-\\d{2}$') &&
+        data.eventLocation is string && data.eventLocation.size() >= 2 && data.eventLocation.size() <= 160 &&
+        data.preferredTime is string && data.preferredTime.size() >= 2 && data.preferredTime.size() <= 40 &&
+        data.requirements is string && data.requirements.size() <= 600 &&
+        data.status is string && data.status in ['Pending', 'Confirmed', 'Cancelled'] &&
+        data.adminNotes is string && data.adminNotes.size() <= 400 &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
+    function isValidPortfolioItem(data) {
+      return data.keys().hasAll([
+          'title',
+          'category',
+          'imageUrl',
+          'caption',
+          'featured',
+          'sortOrder',
+          'createdAt',
+          'updatedAt'
+        ]) &&
+        data.keys().hasOnly([
+          'title',
+          'category',
+          'imageUrl',
+          'caption',
+          'featured',
+          'sortOrder',
+          'createdAt',
+          'updatedAt'
+        ]) &&
+        data.title is string && data.title.size() >= 2 && data.title.size() <= 100 &&
+        data.category is string && data.category in [
+          'Bridal Mehndi',
+          'Portrait Mehndi',
+          'Arabic Mehndi',
+          'Engagement Mehndi',
+          'Custom Mehndi Designs'
+        ] &&
+        data.imageUrl is string && data.imageUrl.size() >= 5 && data.imageUrl.size() <= 500000 &&
+        data.caption is string && data.caption.size() <= 240 &&
+        data.featured is bool &&
+        data.sortOrder is number && data.sortOrder >= 0 && data.sortOrder <= 10000 &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
+    function isValidServiceItem(data) {
+      return data.keys().hasAll([
+          'title',
+          'summary',
+          'duration',
+          'startingPrice',
+          'imageUrl',
+          'highlights',
+          'active',
+          'sortOrder',
+          'createdAt',
+          'updatedAt'
+        ]) &&
+        data.keys().hasOnly([
+          'title',
+          'summary',
+          'duration',
+          'startingPrice',
+          'imageUrl',
+          'highlights',
+          'active',
+          'sortOrder',
+          'createdAt',
+          'updatedAt'
+        ]) &&
+        data.title is string && data.title.size() >= 2 && data.title.size() <= 100 &&
+        data.summary is string && data.summary.size() >= 10 && data.summary.size() <= 320 &&
+        data.duration is string && data.duration.size() >= 2 && data.duration.size() <= 60 &&
+        data.startingPrice is string && data.startingPrice.size() >= 2 && data.startingPrice.size() <= 60 &&
+        data.imageUrl is string && data.imageUrl.size() >= 5 && data.imageUrl.size() <= 500000 &&
+        data.highlights is list && data.highlights.size() <= 6 &&
+        (data.highlights.size() == 0 || (data.highlights[0] is string && data.highlights[0].size() <= 100)) &&
+        data.active is bool &&
+        data.sortOrder is number && data.sortOrder >= 0 && data.sortOrder <= 10000 &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
+    function isValidSiteConfig(data) {
+      return data.keys().hasAll([
+          'artistName',
+          'studioLocation',
+          'artistBio',
+          'artistImageUrl',
+          'whatsappNumber',
+          'instagramHandle',
+          'seeded',
+          'updatedAt'
+        ]) &&
+        data.keys().hasOnly([
+          'artistName',
+          'studioLocation',
+          'artistBio',
+          'artistImageUrl',
+          'whatsappNumber',
+          'instagramHandle',
+          'seeded',
+          'updatedAt'
+        ]) &&
+        data.artistName is string && data.artistName.size() >= 2 && data.artistName.size() <= 60 &&
+        data.studioLocation is string && data.studioLocation.size() >= 2 && data.studioLocation.size() <= 100 &&
+        data.artistBio is string && data.artistBio.size() >= 10 && data.artistBio.size() <= 600 &&
+        data.artistImageUrl is string && data.artistImageUrl.size() >= 5 && data.artistImageUrl.size() <= 500000 &&
+        data.whatsappNumber is string && data.whatsappNumber.size() >= 8 && data.whatsappNumber.size() <= 20 &&
+        data.instagramHandle is string && data.instagramHandle.size() >= 2 && data.instagramHandle.size() <= 60 &&
+        data.seeded is bool &&
+        data.updatedAt is timestamp;
+    }
+
+    function isValidAdminUser(data) {
+      return data.keys().hasAll(['email', 'displayName', 'addedAt']) &&
+        data.keys().hasOnly(['email', 'displayName', 'addedAt']) &&
+        data.email is string && data.email.size() >= 5 && data.email.size() <= 120 &&
+        data.displayName is string && data.displayName.size() >= 1 && data.displayName.size() <= 80 &&
+        data.addedAt is timestamp;
+    }
+
+    // 4. Collection Rules
+    match /bookings/{bookingId} {
+      allow get, list: if isAdmin();
+
+      allow create: if isValidId(bookingId) &&
+        isValidBooking(incoming()) &&
+        incoming().status == 'Pending' &&
+        incoming().adminNotes == '' &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time;
+
+      allow update: if isAdmin() &&
+        isValidId(bookingId) &&
+        isValidBooking(incoming()) &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().bookingCode == existing().bookingCode &&
+        incoming().updatedAt == request.time &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['status', 'adminNotes', 'updatedAt']);
+
+      allow delete: if isAdmin() && isValidId(bookingId);
+    }
+
+    match /portfolio/{itemId} {
+      allow get: if isValidId(itemId);
+      allow list: if true;
+
+      allow create: if isAdmin() &&
+        isValidId(itemId) &&
+        isValidPortfolioItem(incoming()) &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time;
+
+      allow update: if isAdmin() &&
+        isValidId(itemId) &&
+        isValidPortfolioItem(incoming()) &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time &&
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'title',
+          'category',
+          'imageUrl',
+          'caption',
+          'featured',
+          'sortOrder',
+          'updatedAt'
+        ]);
+
+      allow delete: if isAdmin() && isValidId(itemId);
+    }
+
+    match /services/{serviceId} {
+      allow get: if isValidId(serviceId);
+      allow list: if true;
+
+      allow create: if isAdmin() &&
+        isValidId(serviceId) &&
+        isValidServiceItem(incoming()) &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time;
+
+      allow update: if isAdmin() &&
+        isValidId(serviceId) &&
+        isValidServiceItem(incoming()) &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time &&
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'title',
+          'summary',
+          'duration',
+          'startingPrice',
+          'imageUrl',
+          'highlights',
+          'active',
+          'sortOrder',
+          'updatedAt'
+        ]);
+
+      allow delete: if isAdmin() && isValidId(serviceId);
+    }
+
+    match /siteProfile/{profileId} {
+      allow get: if isValidId(profileId);
+      allow list: if true;
+
+      allow create: if isAdmin() &&
+        isValidId(profileId) &&
+        isValidSiteConfig(incoming()) &&
+        incoming().updatedAt == request.time;
+
+      allow update: if isAdmin() &&
+        isValidId(profileId) &&
+        isValidSiteConfig(incoming()) &&
+        incoming().updatedAt == request.time &&
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'artistName',
+          'studioLocation',
+          'artistBio',
+          'artistImageUrl',
+          'whatsappNumber',
+          'instagramHandle',
+          'seeded',
+          'updatedAt'
+        ]);
+
+      allow delete: if isAdmin() && isValidId(profileId);
+    }
+
+    match /admins/{uid} {
+      allow get: if isSignedIn() && isValidId(uid) && (request.auth.uid == uid || isAdmin());
+      allow list: if isAdmin();
+      allow create, update, delete: if isAdmin() && isValidId(uid) && isValidAdminUser(incoming());
+    }
+  }
+}

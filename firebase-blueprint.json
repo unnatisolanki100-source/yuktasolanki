@@ -1,0 +1,334 @@
+{
+  "entities": {
+    "Booking": {
+      "title": "Booking",
+      "description": "A customer mehndi booking enquiry submitted through the multi-user booking platform.",
+      "type": "object",
+      "properties": {
+        "bookingCode": {
+          "type": "string",
+          "description": "Unique human-readable booking reference code (e.g., YUK-2026-4821).",
+          "minLength": 6,
+          "maxLength": 32,
+          "pattern": "^[A-Z0-9-]+$"
+        },
+        "customerName": {
+          "type": "string",
+          "description": "Full name of the customer.",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "phone": {
+          "type": "string",
+          "description": "Customer phone or WhatsApp contact number.",
+          "minLength": 8,
+          "maxLength": 20,
+          "pattern": "^[0-9+\\-\\s()]{8,20}$"
+        },
+        "serviceId": {
+          "type": "string",
+          "description": "Identifier of the selected mehndi service.",
+          "minLength": 1,
+          "maxLength": 80,
+          "pattern": "^[a-zA-Z0-9_-]+$"
+        },
+        "serviceTitle": {
+          "type": "string",
+          "description": "Human-readable name of the selected mehndi service.",
+          "minLength": 2,
+          "maxLength": 100
+        },
+        "eventDate": {
+          "type": "string",
+          "description": "Event date in YYYY-MM-DD format.",
+          "minLength": 10,
+          "maxLength": 10,
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "eventLocation": {
+          "type": "string",
+          "description": "Venue or neighborhood location for the mehndi session.",
+          "minLength": 2,
+          "maxLength": 160
+        },
+        "preferredTime": {
+          "type": "string",
+          "description": "Preferred time slot for the appointment.",
+          "minLength": 2,
+          "maxLength": 40
+        },
+        "requirements": {
+          "type": "string",
+          "description": "Optional bespoke design notes or guest count details.",
+          "minLength": 0,
+          "maxLength": 600
+        },
+        "status": {
+          "type": "string",
+          "description": "Current booking lifecycle status.",
+          "enum": ["Pending", "Confirmed", "Cancelled"]
+        },
+        "adminNotes": {
+          "type": "string",
+          "description": "Internal studio notes added by the admin.",
+          "minLength": 0,
+          "maxLength": 400
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when booking was submitted."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when booking was last updated."
+        }
+      },
+      "required": [
+        "bookingCode",
+        "customerName",
+        "phone",
+        "serviceId",
+        "serviceTitle",
+        "eventDate",
+        "eventLocation",
+        "preferredTime",
+        "requirements",
+        "status",
+        "adminNotes",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "PortfolioItem": {
+      "title": "PortfolioItem",
+      "description": "A photograph and metadata entry in Yuk Creation's mehndi portfolio gallery.",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Editorial title of the mehndi design.",
+          "minLength": 2,
+          "maxLength": 100
+        },
+        "category": {
+          "type": "string",
+          "description": "Portfolio category.",
+          "enum": [
+            "Bridal Mehndi",
+            "Portrait Mehndi",
+            "Arabic Mehndi",
+            "Engagement Mehndi",
+            "Custom Mehndi Designs"
+          ]
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "Image path, HTTPS URL, or compressed data URL.",
+          "minLength": 5,
+          "maxLength": 500000
+        },
+        "caption": {
+          "type": "string",
+          "description": "Short artistic note describing motifs or occasion.",
+          "minLength": 0,
+          "maxLength": 240
+        },
+        "featured": {
+          "type": "boolean",
+          "description": "Whether the photograph appears in the homepage featured showcase."
+        },
+        "sortOrder": {
+          "type": "number",
+          "description": "Numeric ordering weight for editorial arrangement."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "title",
+        "category",
+        "imageUrl",
+        "caption",
+        "featured",
+        "sortOrder",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "ServiceItem": {
+      "title": "ServiceItem",
+      "description": "A mehndi service offering displayed on the Services section and booking selector.",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Service name.",
+          "minLength": 2,
+          "maxLength": 100
+        },
+        "summary": {
+          "type": "string",
+          "description": "Concise description of the mehndi service.",
+          "minLength": 10,
+          "maxLength": 320
+        },
+        "duration": {
+          "type": "string",
+          "description": "Estimated session duration.",
+          "minLength": 2,
+          "maxLength": 60
+        },
+        "startingPrice": {
+          "type": "string",
+          "description": "Display price range or starting rate.",
+          "minLength": 2,
+          "maxLength": 60
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "Editorial photograph representing the service.",
+          "minLength": 5,
+          "maxLength": 500000
+        },
+        "highlights": {
+          "type": "array",
+          "description": "Up to 6 concise inclusion highlights."
+        },
+        "active": {
+          "type": "boolean",
+          "description": "Whether the service is open for customer enquiries."
+        },
+        "sortOrder": {
+          "type": "number",
+          "description": "Ordering weight."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "title",
+        "summary",
+        "duration",
+        "startingPrice",
+        "imageUrl",
+        "highlights",
+        "active",
+        "sortOrder",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "SiteConfig": {
+      "title": "SiteConfig",
+      "description": "Studio profile, artist portrait, and catalog seed state.",
+      "type": "object",
+      "properties": {
+        "artistName": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 60
+        },
+        "studioLocation": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 100
+        },
+        "artistBio": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 600
+        },
+        "artistImageUrl": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 500000
+        },
+        "whatsappNumber": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 20
+        },
+        "instagramHandle": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 60
+        },
+        "seeded": {
+          "type": "boolean"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "artistName",
+        "studioLocation",
+        "artistBio",
+        "artistImageUrl",
+        "whatsappNumber",
+        "instagramHandle",
+        "seeded",
+        "updatedAt"
+      ]
+    },
+    "AdminUser": {
+      "title": "AdminUser",
+      "description": "Authorized studio administrator record.",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email",
+          "maxLength": 120
+        },
+        "displayName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "addedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["email", "displayName", "addedAt"]
+    }
+  },
+  "firestore": {
+    "/bookings/{bookingId}": {
+      "schema": { "$ref": "#/entities/Booking" },
+      "description": "Individual customer booking enquiries, isolated per submission and readable only by admins."
+    },
+    "/portfolio/{itemId}": {
+      "schema": { "$ref": "#/entities/PortfolioItem" },
+      "description": "Publicly viewable mehndi portfolio photographs managed by admins."
+    },
+    "/services/{serviceId}": {
+      "schema": { "$ref": "#/entities/ServiceItem" },
+      "description": "Publicly viewable mehndi service offerings managed by admins."
+    },
+    "/siteProfile/{profileId}": {
+      "schema": { "$ref": "#/entities/SiteConfig" },
+      "description": "Artist profile and studio contact settings managed by admins."
+    },
+    "/admins/{uid}": {
+      "schema": { "$ref": "#/entities/AdminUser" },
+      "description": "Role-based access control list for studio administrators."
+    }
+  }
+}
