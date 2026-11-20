@@ -85,7 +85,7 @@ export function AboutSection({ profile, onBookConsultation }: AboutSectionProps)
                   <div className="absolute inset-0 portrait-sharp-mask">
                     <ImageWithFallback
                       src={profile.artistImageUrl}
-                      alt={`${profile.artistName} — bridal mehndi artist in deep royal plum ensemble at Yuk Creation`}
+                      alt={`${profile.artistName} — bridal mehndi artist admiring henna in royal plum embroidered suit at Yuk Creation`}
                       className="w-full h-full object-cover object-top"
                       fallbackTitle={profile.artistName}
                     />

@@ -198,7 +198,9 @@ export default function App() {
     rawProfile.artistImageUrl.includes('yukta_screenshot_saree_blowout_white') ||
     rawProfile.artistImageUrl.includes('yukta_ss_girl_heavy_saree_jhumka') ||
     rawProfile.artistImageUrl.includes('yukta_exact_ea_blowout_white') ||
-    rawProfile.artistImageUrl.includes('yukta_exact_ea_soft_50_blowout')
+    rawProfile.artistImageUrl.includes('yukta_exact_ea_soft_50_blowout') ||
+    rawProfile.artistImageUrl.includes('yukta_refined_beautiful_mehndi_white') ||
+    rawProfile.artistImageUrl.includes('yukta_founder_object_cutout')
       ? DEFAULT_SITE_PROFILE.artistImageUrl
       : rawProfile.artistImageUrl;
 

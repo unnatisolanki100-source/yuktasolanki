@@ -1,4 +1,4 @@
-import yuktaKalakarPlumImg from '../assets/images/yukta_refined_beautiful_mehndi_white_1795004532878.jpg';
+import yuktaKalakarPlumImg from '../assets/images/yukta_founder_plum_cutout.png';
 import heroBridalHandsWideImg from '../assets/images/hero_bridal_hands_wide_1794581307913.jpg';
 import heroBridalPalmsWideImg from '../assets/images/hero_slide_bridal_palms_wide_1794581887130.jpg';
 import heroPortraitArtWideImg from '../assets/images/hero_slide_portrait_art_wide_1794581887537.jpg';
