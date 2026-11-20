@@ -1,0 +1,22 @@
+{
+  "name": "Yuk Creation — Yukta Solanki",
+  "short_name": "Yuk Creation",
+  "description": "Yuk Creation by Yukta Solanki — Bespoke bridal, portrait & engagement mehndi artistry in Gotri, Vadodara, Gujarat.",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#361B2C",
+  "background_color": "#FFFFFF",
+  "icons": [
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

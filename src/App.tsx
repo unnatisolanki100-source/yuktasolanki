@@ -81,6 +81,34 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    const origin = window.location.origin;
+    const canonicalUrl = `${origin}${window.location.pathname}`;
+    const canonicalLink = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    if (canonicalLink) {
+      canonicalLink.href = canonicalUrl;
+    }
+    const ogUrl = document.querySelector<HTMLMetaElement>('meta[property="og:url"]');
+    if (ogUrl) {
+      ogUrl.content = canonicalUrl;
+    }
+    const ogImage = document.querySelector<HTMLMetaElement>('meta[property="og:image"]');
+    if (ogImage) {
+      ogImage.content = `${origin}/og-image.jpg`;
+    }
+    const twitterImage = document.querySelector<HTMLMetaElement>('meta[name="twitter:image"]');
+    if (twitterImage) {
+      twitterImage.content = `${origin}/og-image.jpg`;
+    }
+    const jsonLdEl = document.getElementById('yuk-creation-jsonld');
+    if (jsonLdEl && jsonLdEl.textContent) {
+      const defaultOrigin = 'https://ais-pre-r7o6smjytn5kht7kkn6wjk-71329138269.asia-east1.run.app';
+      if (origin !== defaultOrigin) {
+        jsonLdEl.textContent = jsonLdEl.textContent.split(defaultOrigin).join(origin);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
       setAuthReady(true);
